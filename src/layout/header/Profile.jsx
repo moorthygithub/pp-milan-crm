@@ -129,8 +129,8 @@ const Profile = () => {
 
     const data = {
       old_password: password.old_password,
-      password: password.password,
-      username: localStorage.getItem("email"),
+      new_password: password.password,
+      username: localStorage.getItem("username"),
     };
 
     try {
@@ -196,14 +196,15 @@ const Profile = () => {
         }}
         onClick={handleClick2}
       >
-     <Avatar
-  src={logo}
-  alt="image"
-  sx={{
-    width: 35, // Smaller width
-    height: 35, // Smaller height
-  }}
-/>
+        <Avatar
+          src={logo}
+          alt="image"
+          sx={{
+            width: 35,
+            height: 35,
+            padding: "4px",
+          }}
+        />
       </IconButton>
       {/* ------------------------------------------- */}
       {/* Message Dropdown */}

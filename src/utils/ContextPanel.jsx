@@ -28,22 +28,6 @@ const AppProvider = ({ children }) => {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchYearData = async () => {
-  //     try {
-  //       const response = await axios.get(`${BASE_URL}/api/fetch-year`, {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       });
-  //       setCurrentYear(response.data?.year?.current_year || "");
-  //     } catch (error) {
-  //       console.error("Error fetching year data:", error);
-  //     }
-  //   };
-  //   fetchYearData();
-  // }, []);
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     const currentPath = location.pathname;

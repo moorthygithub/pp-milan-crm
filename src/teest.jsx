@@ -1,207 +1,142 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../layout/Layout";
-import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
-import { IconInfoCircle } from "@tabler/icons-react";
-import toast from "react-hot-toast";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { Button } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import CountUp from "react-countup";
+import { Chart, ArcElement, registerables } from "chart.js";
+import { Users, RefreshCcw } from "lucide-react";
+import {
+  IconBrandCampaignmonitor,
+  IconBrandLine,
+  IconTemplate,
+} from "@tabler/icons-react";
+import { Center, Loader, Text } from "@mantine/core";
 
-const AddTemplate = () => {
-  const [template, setTemplate] = useState({
-    template_name: "",
-    template_design: "", // For HTML content
-    template_subject: "",
-    template_url: "",
-  });
+Chart.register(ArcElement, ...registerables);
+const DashboardCard = ({ title, value, icon: Icon, color }) => (
+  <div className="bg-white rounded-lg overflow-hidden shadow-sm">
+    <div className="p-6 border-b border-gray-100">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
+          <h3 className="text-2xl font-bold text-gray-900">
+            <CountUp end={value} separator="," />
+          </h3>
+        </div>
+        <div
+          className={`w-12 h-12 flex items-center justify-center rounded-full ${color}`}
+        >
+          <Icon className="w-6 h-6 text-white" />
+        </div>
+      </div>
+    </div>
+  </div>
+);
+import married from "/src/assets/dashboard/w.png";
 
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [isHtmlView, setIsHtmlView] = useState(false); // State for toggling HTML view
-  const navigate = useNavigate();
+const Home = () => {
+  const [result, setResult] = useState([]);
+  const [loadingDashboardData, setLoadingDashboardData] = useState(true);
 
-  const onInputChange = (name, value) => {
-    setTemplate((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const isLoading = loadingDashboardData;
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setIsButtonDisabled(true);
-
-    const data = {
-      template_name: template.template_name,
-      template_subject: template.template_subject,
-      template_design: template.template_design, // Already in HTML
-      template_url: template.template_url,
-    };
+  const fetchResult = async () => {
+    setLoadingDashboardData(true);
 
     try {
-      await axios.post(`${BASE_URL}/panel-create-template`, data, {
+      const response = await axios.get(`${BASE_URL}/panel-fetch-dashboard`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      toast.success("Template Created Successfully");
-      navigate("/templates");
-      setTemplate({
-        template_name: "",
-        template_subject: "",
-        template_design: "", // Reset HTML content
-        template_url: "",
-      });
+      if (response.status == "200") {
+        setResult(response.data);
+      }
     } catch (error) {
-      toast.error("Error creating template");
-      console.error(error);
+      console.error("Error fetching dashboard data:", error);
     } finally {
-      setIsButtonDisabled(false);
+      setLoadingDashboardData(false);
     }
   };
 
-  const FormLabel = ({ children, required }) => (
-    <label className="block text-sm font-semibold text-black mb-1">
-      {children}
-      {required && <span className="text-red-500 ml-1">*</span>}
-    </label>
-  );
+  useEffect(() => {
+    fetchResult();
+  }, []);
 
-  const inputClass =
-    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-green-500";
+  const cardConfig = [
+    {
+      title: "Campaign",
+      value: result.user_new_registration_count,
+      icon: IconBrandCampaignmonitor,
+      color: "bg-blue-600",
+    },
+    {
+      title: "Template",
+      value: result.user_married_count,
+      icon: IconBrandCampaignmonitor,
+      color: "bg-green-600",
+    },
+    {
+      title: "Group",
+      value: result.user_unmarried_count,
+      icon: Users,
+      color: "bg-purple-600",
+    },
+    {
+      title: "Contact",
+      value: result.user_male_count,
+      icon: IconBrandLine,
+      color: "bg-amber-600",
+    },
+    {
+      title: "Contact",
+      value: result.user_female_count,
+      icon: IconBrandLine,
+      color: "bg-amber-600",
+    },
+  ];
 
   return (
     <Layout>
-      <div className="bg-[#FFFFFF] p-2 rounded-lg">
-        <div className="sticky top-0 p-2 mb-4 border-b-2 border-green-500 rounded-lg bg-[#E1F5FA]">
-          <h2 className="px-5 text-[black] text-lg flex flex-row justify-between items-center rounded-xl p-2">
-            <div className="flex items-center gap-2">
-              <IconInfoCircle className="w-4 h-4" />
-              <span>Template Add</span>
-            </div>
-          </h2>
-        </div>
-        <hr />
-
-        <form
-          autoComplete="off"
-          onSubmit={onSubmit}
-          className="w-full max-w-7xl mx-auto p-6 space-y-8"
-        >
-          <div className="grid grid-cols-1 p-4 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div>
-              <FormLabel required>Template Name</FormLabel>
-              <input
-                type="text"
-                name="template_name"
-                value={template.template_name}
-                onChange={(e) => onInputChange(e.target.name, e.target.value)}
-                className={inputClass}
-                required
-              />
-            </div>
-
-            <div>
-              <FormLabel required>Subject</FormLabel>
-              <input
-                type="text"
-                name="template_subject"
-                value={template.template_subject}
-                onChange={(e) => onInputChange(e.target.name, e.target.value)}
-                className={inputClass}
-                required
-              />
-            </div>
-            <div>
-              <FormLabel>Template URL</FormLabel>
-              <input
-                type="text"
-                name="template_url"
-                value={template.template_url}
-                onChange={(e) => onInputChange(e.target.name, e.target.value)}
-                className={inputClass}
-              />
-            </div>
-          </div>
-
-          <div className="editor-container">
-            <FormLabel required>Template Design</FormLabel>
-
-            {/* Toggle HTML View or ReactQuill Editor */}
-            <Button
-              onClick={() => setIsHtmlView(!isHtmlView)}
-              className="mb-4 text-white bg-blue-600"
-            >
-              {isHtmlView ? "Switch to Editor" : "Switch to HTML View"}
-            </Button>
-
-            {isHtmlView ? (
-              // Allow copy-pasting HTML content in the textarea
-              <div
-                className="p-4 bg-gray-100 border rounded"
-                style={{
-                  minHeight: "200px",
-                  overflowY: "auto",
-                  whiteSpace: "pre-wrap", // Ensures whitespace is respected
-                  wordBreak: "break-word", // Breaks long words to avoid overflow
-                }}
-              >
-                <textarea
-                  value={template.template_design}
-                  onChange={(e) =>
-                    setTemplate((prev) => ({
-                      ...prev,
-                      template_design: e.target.value,
-                    }))
-                  }
-                  placeholder="Paste your HTML code here"
-                  className="w-full h-full bg-gray-100 p-2 border rounded"
-                  style={{ minHeight: "200px" }}
+      <div className=" bg-gray-100 ">
+        {isLoading ? (
+          <Center style={{ height: "70vh", flexDirection: "column" }}>
+            <Loader size="lg" variant="dots" color="blue" />
+            <Text mt="md" color="gray" size="lg">
+              Loading, please wait...
+            </Text>
+          </Center>
+        ) : (
+          <>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {cardConfig.map((card, index) => (
+                <DashboardCard
+                  key={index}
+                  title={card.title}
+                  value={card.value}
+                  icon={card.icon}
+                  color={card.color}
                 />
-              </div>
-            ) : (
-              // Use ReactQuill for editing
-              <ReactQuill
-                theme="snow"
-                value={template.template_design}
-                onChange={(content) =>
-                  setTemplate((prev) => ({ ...prev, template_design: content }))
-                }
-                className="editor"
-                placeholder="Type your content here..."
-              />
-            )}
-          </div>
+              ))}
 
-          <div className="flex flex-col sm:flex-row sm:justify-center items-center gap-4">
-            <Button
-              className="w-full sm:w-36 text-white bg-blue-600"
-              type="submit"
-              disabled={isButtonDisabled}
+            </div>
+
+            {/* Main Content Grid */}
+
+            <button
+              onClick={() => {
+                fetchResult();
+              }}
+              className="fixed bottom-8 right-8 p-4 bg-white hover:bg-gray-50 rounded-full shadow-lg transition-colors"
             >
-              {isButtonDisabled ? "Submitting..." : "Submit"}
-            </Button>
-            <Button
-              className="w-full sm:w-36 text-white bg-red-600"
-              onClick={() => navigate("/templates")}
-            >
-              Back
-            </Button>
-          </div>
-        </form>
+              <RefreshCcw className="h-6 w-6 text-blue-600" />
+            </button>
+          </>
+        )}
       </div>
-
-      <style>
-        {`
-          .editor {
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-          }
-        `}
-      </style>
     </Layout>
   );
 };
 
-export default AddTemplate;
+export default Home;

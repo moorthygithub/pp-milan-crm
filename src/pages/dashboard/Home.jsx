@@ -4,33 +4,14 @@ import BASE_URL from "../../base/BaseUrl";
 import axios from "axios";
 import CountUp from "react-countup";
 import { Chart, ArcElement, registerables } from "chart.js";
-import {
-  Users,
-  Building2,
-  Bell,
-  BarChart3,
-  PieChart,
-  RefreshCcw,
-  X,
-  LayoutDashboard,
-  User,
-  IndianRupee,
-} from "lucide-react";
-import {
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-  Spinner,
-} from "@material-tailwind/react";
-import {
-  IconBrandCampaignmonitor,
-  IconBrandLine,
-  IconTemplate,
-} from "@tabler/icons-react";
-import { Center, Loader, Text } from "@mantine/core";
+import { Users, RefreshCcw } from "lucide-react";
+import married from "/src/assets/dashboard/w.png";
+import man from "/src/assets/dashboard/man.png";
+import women from "/src/assets/dashboard/woman.png";
+import bachelor from "/src/assets/dashboard/bachelor.png";
+import add from "/src/assets/dashboard/add.png";
 
-// import { ContextPanel } from "../../utils/ContextPanel";
+import { Center, Loader, Text } from "@mantine/core";
 
 Chart.register(ArcElement, ...registerables);
 const DashboardCard = ({ title, value, icon: Icon, color }) => (
@@ -46,7 +27,11 @@ const DashboardCard = ({ title, value, icon: Icon, color }) => (
         <div
           className={`w-12 h-12 flex items-center justify-center rounded-full ${color}`}
         >
-          <Icon className="w-6 h-6 text-white" />
+          {typeof Icon === "string" ? (
+            <img src={Icon} alt={title} className="w-6 h-6 object-contain" />
+          ) : (
+            <Icon className="w-6 h-6 text-white" />
+          )}
         </div>
       </div>
     </div>
@@ -84,28 +69,34 @@ const Home = () => {
 
   const cardConfig = [
     {
-      title: "Campaign",
-      value: result.campaign,
-      icon: IconBrandCampaignmonitor,
-      color: "bg-blue-600",
-    },
-    {
-      title: "Template",
-      value: result.template,
-      icon: IconTemplate,
+      title: "New Register",
+      value: result.user_new_registration_count,
+      icon: add,
       color: "bg-green-600",
     },
     {
-      title: "Group",
-      value: result.group,
-      icon: Users,
-      color: "bg-purple-600",
+      title: "Married",
+      value: result.user_married_count,
+      icon: married,
+      color: "bg-pink-600",
     },
     {
-      title: "Contact",
-      value: result.contact,
-      icon: IconBrandLine,
+      title: "UnMarried",
+      value: result.user_unmarried_count,
+      icon: bachelor,
+      color: "bg-red-600",
+    },
+    {
+      title: "Male",
+      value: result.user_male_count,
+      icon: man,
       color: "bg-amber-600",
+    },
+    {
+      title: "Female",
+      value: result.user_female_count,
+      icon: women,
+      color: "bg-blue-600",
     },
   ];
 

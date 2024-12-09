@@ -89,20 +89,6 @@ const ForgetPassword = () => {
               Sign In
             </Link>
           </div>
-
-          {/* <div>
-            <div className="mt-6">
-              <h6 className="text-center text-gray-600">Follow Us</h6>
-              <div className="flex justify-center space-x-4 mt-4">
-                <CgFacebook className="text-black hover:bg-blue-700 cursor-pointer hover:text-white p-2 rounded-full w-10 h-10" />
-                <TiSocialYoutubeCircular className="text-black hover:bg-red-500 hover:text-white p-2 rounded-full w-10 h-10" />
-                <FaTwitter className="text-black hover:bg-blue-500 hover:text-white p-2 rounded-full w-10 h-10" />
-                <TiSocialLinkedin className="text-black hover:bg-blue-500 hover:text-white p-2 rounded-full w-10 h-10" />
-                <FaInstagram className="text-black hover:bg-yellow-800 hover:text-white p-2 rounded-full w-10 h-10" />
-                <FaPinterest className="text-black hover:bg-red-500 hover:text-white p-2 rounded-full w-10 h-10" />
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     </>

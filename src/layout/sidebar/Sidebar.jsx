@@ -13,7 +13,7 @@ const Sidebar = ({
 }) => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   
-  // const sidebarWidth = "270px"; 
+
   const sidebarWidth = isCollapsed ? "100px" : "270px";
 
   const sidebarWidthMobile = '270px'

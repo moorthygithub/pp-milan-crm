@@ -1,5 +1,5 @@
 import { styled } from "@mui/material";
-
+import logo from "../../../assets/receipt/ag_logo.png";
 import { Link } from "react-router-dom";
 import logosmall from "../../../assets/receipt/ag_logo.png";
 import logstrucn from "../../../../public/user_1.png";
@@ -21,11 +21,13 @@ const Logo = ({ isCollapsed }) => {
     <>
       {!isCollapsed ? (
         <LinkStyled to="/home">
-          <img src={logosmall} alt="logo" className="h-16" priority />
+          <div className="flex justify-center">
+            <img src={logo} alt="logo" className="h-16" priority />
+          </div>
         </LinkStyled>
       ) : (
         <LargeLinkStyled to="/home">
-          <img src={logstrucn} alt="logo" className="h-16" priority />
+          <img src={logo} alt="logo" className="h-16" priority />
         </LargeLinkStyled>
       )}
     </>
